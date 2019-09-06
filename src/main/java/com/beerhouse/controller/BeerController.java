@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Arrays;
@@ -40,5 +41,12 @@ public class BeerController {
     public BeerDto detail(@PathVariable int id){
         Beer beer = beerRepository.getOne(id);
         return new BeerDto(beer);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<BeerDto> update(@PathVariable int id, @RequestBody @Valid BeerForm form){
+        Beer beer = form.update(id, beerRepository);
+        return ResponseEntity.ok(new BeerDto(beer));
     }
 }
