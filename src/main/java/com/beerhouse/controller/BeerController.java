@@ -16,6 +16,7 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/beers")
@@ -42,23 +43,35 @@ public class BeerController {
 
     @GetMapping("/{id}")
     @Transactional
-    public BeerDto detail(@PathVariable int id){
-        Beer beer = beerRepository.getOne(id);
-        return new BeerDto(beer);
+    public ResponseEntity<BeerDto> detail(@PathVariable int id){
+        Optional<Beer> beer = beerRepository.findById(id);
+        if(beer.isPresent())
+            return ResponseEntity.ok(new BeerDto(beer.get()));
+        return ResponseEntity.notFound().build();
+
     }
 
     @PutMapping("/{id}")
     @Transactional
     public ResponseEntity<BeerDto> update(@PathVariable int id, @RequestBody @Valid BeerForm form){
-        Beer beer = form.update(id, beerRepository);
-        return ResponseEntity.ok(new BeerDto(beer));
+        Optional<Beer> optional = beerRepository.findById(id);
+        if(optional.isPresent()){
+            Beer beer = form.update(id, beerRepository);
+            return ResponseEntity.ok(new BeerDto(beer));
+        }
+        return ResponseEntity.notFound().build();
     }
 
 
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<BeerDto> delete(@PathVariable int id){
-        beerRepository.delete(id);
-        return ResponseEntity.noContent().build();
+        Optional<Beer> optional = beerRepository.findById(id);
+        if(optional.isPresent()){
+            beerRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+
     }
 }
