@@ -15,6 +15,7 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/beers")
@@ -24,11 +25,13 @@ public class BeerController {
     private BeerRepository beerRepository;
 
     @GetMapping
+    @Transactional
     public List<BeerDto> list(){
         List<Beer> beers = beerRepository.findAll();
         return BeerDto.convert(beers);
     }
     @PostMapping
+    @Transactional
     public ResponseEntity<BeerDto> register(@RequestBody @Valid BeerForm form, UriComponentsBuilder uriComponentsBuilder){
         Beer beer = form.convert();
         beerRepository.save(beer);
@@ -38,6 +41,7 @@ public class BeerController {
     }
 
     @GetMapping("/{id}")
+    @Transactional
     public BeerDto detail(@PathVariable int id){
         Beer beer = beerRepository.getOne(id);
         return new BeerDto(beer);
@@ -48,5 +52,13 @@ public class BeerController {
     public ResponseEntity<BeerDto> update(@PathVariable int id, @RequestBody @Valid BeerForm form){
         Beer beer = form.update(id, beerRepository);
         return ResponseEntity.ok(new BeerDto(beer));
+    }
+
+
+    @DeleteMapping("/{id}")
+    @Transactional
+    public ResponseEntity<BeerDto> delete(@PathVariable int id){
+        beerRepository.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }
