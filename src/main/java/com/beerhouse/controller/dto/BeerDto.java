@@ -2,6 +2,9 @@ package com.beerhouse.controller.dto;
 
 import com.beerhouse.model.Beer;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class BeerDto {
     private int id;
     private String name;
@@ -17,6 +20,10 @@ public class BeerDto {
         this.alcoholContent = beer.getAlcoholContent();
         this.price = beer.getPrice();
         this.category = beer.getCategory();
+    }
+
+    public static List<BeerDto> convert(List<Beer> beers) {
+        return beers.stream().map(BeerDto::new).collect(Collectors.toList());
     }
 
     public int getId() {
