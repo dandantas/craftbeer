@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +28,17 @@ public class BeerController {
         return BeerDto.convert(beers);
     }
     @PostMapping
-    public ResponseEntity<BeerDto> register(@RequestBody BeerForm form, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity<BeerDto> register(@RequestBody @Valid BeerForm form, UriComponentsBuilder uriComponentsBuilder){
         Beer beer = form.convert();
         beerRepository.save(beer);
 
         URI uri = uriComponentsBuilder.path("/beers/{id}").buildAndExpand(beer.getId()).toUri();
         return ResponseEntity.created(uri).body(new BeerDto(beer));
+    }
+
+    @GetMapping("/{id}")
+    public BeerDto detail(@PathVariable int id){
+        Beer beer = beerRepository.getOne(id);
+        return new BeerDto(beer);
     }
 }

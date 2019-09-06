@@ -1,12 +1,20 @@
 package com.beerhouse.controller.form;
 
 import com.beerhouse.model.Beer;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import javax.validation.constraints.NotNull;
 
 public class BeerForm {
+
+    @NotNull(message = "Please provide a name") @NotEmpty
     private String name;
+    @NotNull(message = "Please provide a ingredient") @NotEmpty
     private String ingredients;
+    @NotNull(message = "Please provide a Alcohol Content") @NotEmpty
     private String alcoholContent;
     private float price;
+    @NotNull(message = "Please provide a category") @NotEmpty
     private String category;
 
 
