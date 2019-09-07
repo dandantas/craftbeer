@@ -22,6 +22,8 @@ import java.util.Optional;
 @RequestMapping("/beers")
 public class BeerController {
 
+
+
     @Autowired
     private BeerRepository beerRepository;
 
@@ -62,7 +64,6 @@ public class BeerController {
         return ResponseEntity.notFound().build();
     }
 
-
     @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity<BeerDto> delete(@PathVariable int id){
@@ -72,6 +73,5 @@ public class BeerController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
-
     }
 }
